@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BarChartComponent from '../components/charts/BarChart';
+import PieChartComponent from '../components/charts/PieChart';
 import LineChartComponent from '../components/charts/LineChart';
 import DateRangeSelector from '../components/dashboard/DateRangeSelector';
 import { FileText, Download, BarChart2, PieChart, TrendingUp, Calendar, Users, DollarSign } from 'lucide-react';
@@ -321,154 +322,110 @@ const Reports = () => {
             </div>
           </div>
         );
-      case 'segments':
-        return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-4 rounded-lg">
-                <h3 className="font-medium mb-3">Customer Segment Distribution</h3>
-                <div className="flex justify-center h-64">
-                  <div style={{ width: '100%', height: 250 }}>
-                    {/* Placeholder for actual chart component */}
-                    <div className="relative h-full w-full">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-48 h-48 bg-gray-100 rounded-full flex items-center justify-center">
-                          <div className="w-40 h-40 bg-white rounded-full"></div>
+        case 'segments':
+            return (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white p-4 rounded-lg">
+                    <h3 className="font-medium mb-3">Customer Segment Distribution</h3>
+                    <div className="h-64">
+                      {/* Use the existing PieChartComponent that you already have in your project */}
+                      <PieChartComponent 
+                        data={customerSegmentData}
+                        dataKey="value"
+                        nameKey="name"
+                        height={250}
+                        isPercentage={true}
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2 mt-4">
+                      {customerSegmentData.map((segment, index) => (
+                        <div key={index} className="flex items-center">
+                          <div className={`w-3 h-3 rounded-full mr-2 ${
+                            index === 0 ? 'bg-indigo-500' :
+                            index === 1 ? 'bg-green-500' :
+                            index === 2 ? 'bg-yellow-500' :
+                            'bg-red-500'
+                          }`}></div>
+                          <div className="text-sm">
+                            <span className="font-medium">{segment.name}</span>
+                            <span className="text-gray-500 ml-2">{segment.value}%</span>
+                          </div>
                         </div>
-                        
-                        {/* Simplified pie chart segments */}
-                        <div className="absolute" style={{ 
-                          width: '48px', height: '96px',
-                          background: '#6366F1',
-                          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-                          borderRadius: '96px 0 0 96px',
-                          top: 'calc(50% - 48px)',
-                          left: 'calc(50% - 24px)',
-                          transform: 'rotate(-45deg)',
-                          transformOrigin: 'right center'
-                        }}></div>
-                        <div className="absolute" style={{ 
-                          width: '48px', height: '96px',
-                          background: '#10B981',
-                          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-                          borderRadius: '0 96px 96px 0',
-                          top: 'calc(50% - 48px)',
-                          left: 'calc(50% - 24px)',
-                          transform: 'rotate(45deg)',
-                          transformOrigin: 'right center'
-                        }}></div>
-                        <div className="absolute" style={{ 
-                          width: '48px', height: '96px',
-                          background: '#F59E0B',
-                          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-                          borderRadius: '96px 0 0 96px',
-                          top: 'calc(50% - 48px)',
-                          left: 'calc(50% - 24px)',
-                          transform: 'rotate(135deg)',
-                          transformOrigin: 'right center'
-                        }}></div>
-                        <div className="absolute" style={{ 
-                          width: '48px', height: '96px',
-                          background: '#EF4444',
-                          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-                          borderRadius: '0 96px 96px 0',
-                          top: 'calc(50% - 48px)',
-                          left: 'calc(50% - 24px)',
-                          transform: 'rotate(225deg)',
-                          transformOrigin: 'right center'
-                        }}></div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg">
+                    <h3 className="font-medium mb-3">Segment Analysis</h3>
+                    <div className="space-y-4">
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-sm">
+                          <span>Families</span>
+                          <span className="font-medium">₹4,500 avg. spend</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-indigo-500 h-2 rounded-full" style={{ width: '78%' }}></div>
+                        </div>
+                        <div className="text-xs text-gray-500">78% return rate</div>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-sm">
+                          <span>Corporate</span>
+                          <span className="font-medium">₹12,800 avg. spend</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-green-500 h-2 rounded-full" style={{ width: '65%' }}></div>
+                        </div>
+                        <div className="text-xs text-gray-500">65% return rate</div>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-sm">
+                          <span>Tourists</span>
+                          <span className="font-medium">₹8,200 avg. spend</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '32%' }}></div>
+                        </div>
+                        <div className="text-xs text-gray-500">32% return rate</div>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-sm">
+                          <span>Others</span>
+                          <span className="font-medium">₹3,600 avg. spend</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-red-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+                        </div>
+                        <div className="text-xs text-gray-500">45% return rate</div>
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-2 mt-4">
-                  {customerSegmentData.map((segment, index) => (
-                    <div key={index} className="flex items-center">
-                      <div className={`w-3 h-3 rounded-full mr-2 ${
-                        index === 0 ? 'bg-indigo-500' :
-                        index === 1 ? 'bg-green-500' :
-                        index === 2 ? 'bg-yellow-500' :
-                        'bg-red-500'
-                      }`}></div>
-                      <div className="text-sm">
-                        <span className="font-medium">{segment.name}</span>
-                        <span className="text-gray-500 ml-2">{segment.value}%</span>
-                      </div>
+                <div className="bg-indigo-50 p-4 rounded-lg">
+                  <h3 className="font-medium text-indigo-800 mb-2">Segment Growth Opportunities</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="bg-white p-3 rounded">
+                      <div className="font-medium mb-1">Corporate Packages</div>
+                      <p className="text-gray-600">Potential 22% revenue increase with targeted corporate retreat packages.</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="bg-white p-4 rounded-lg">
-                <h3 className="font-medium mb-3">Segment Analysis</h3>
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-sm">
-                      <span>Families</span>
-                      <span className="font-medium">₹4,500 avg. spend</span>
+                    <div className="bg-white p-3 rounded">
+                      <div className="font-medium mb-1">Family Activities</div>
+                      <p className="text-gray-600">Increase family visit frequency with seasonal activity programs.</p>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-indigo-500 h-2 rounded-full" style={{ width: '78%' }}></div>
+                    <div className="bg-white p-3 rounded">
+                      <div className="font-medium mb-1">Tourist Partnerships</div>
+                      <p className="text-gray-600">Form partnerships with tour operators to boost tourist segment by 18%.</p>
                     </div>
-                    <div className="text-xs text-gray-500">78% return rate</div>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-sm">
-                      <span>Corporate</span>
-                      <span className="font-medium">₹12,800 avg. spend</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-green-500 h-2 rounded-full" style={{ width: '65%' }}></div>
-                    </div>
-                    <div className="text-xs text-gray-500">65% return rate</div>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-sm">
-                      <span>Tourists</span>
-                      <span className="font-medium">₹8,200 avg. spend</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '32%' }}></div>
-                    </div>
-                    <div className="text-xs text-gray-500">32% return rate</div>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-sm">
-                      <span>Others</span>
-                      <span className="font-medium">₹3,600 avg. spend</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-red-500 h-2 rounded-full" style={{ width: '45%' }}></div>
-                    </div>
-                    <div className="text-xs text-gray-500">45% return rate</div>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="bg-indigo-50 p-4 rounded-lg">
-              <h3 className="font-medium text-indigo-800 mb-2">Segment Growth Opportunities</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div className="bg-white p-3 rounded">
-                  <div className="font-medium mb-1">Corporate Packages</div>
-                  <p className="text-gray-600">Potential 22% revenue increase with targeted corporate retreat packages.</p>
-                </div>
-                <div className="bg-white p-3 rounded">
-                  <div className="font-medium mb-1">Family Activities</div>
-                  <p className="text-gray-600">Increase family visit frequency with seasonal activity programs.</p>
-                </div>
-                <div className="bg-white p-3 rounded">
-                  <div className="font-medium mb-1">Tourist Partnerships</div>
-                  <p className="text-gray-600">Form partnerships with tour operators to boost tourist segment by 18%.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
+            );
       default:
         return (
           <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
