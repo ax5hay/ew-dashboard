@@ -46,7 +46,7 @@ const Header = ({ toggleSidebar, isSidebarCollapsed, setCurrentPage, isMobile })
           
           <div className="ml-2 sm:ml-4 flex items-center">
             <div className="text-base sm:text-xl font-bold text-gray-800 truncate max-w-[120px] sm:max-w-none">
-              {isMobile ? 'EW Dashboard' : 'Business Intelligence Dashboard'}
+              {isMobile ? 'EW Dashboard' : 'You Asked For A Presentation, Here is a Product Instead'}
             </div>
             <div className="hidden sm:flex ml-4 text-sm text-gray-500 items-center">
               <Calendar size={16} className="mr-1" />

@@ -6,7 +6,7 @@ const Sidebar = ({ collapsed, setCollapsed, currentPage, setCurrentPage }) => {
     { id: 'dashboard', name: 'Dashboard', icon: Home },
     { id: 'ztech', name: 'Z-Tech Parks', icon: Map },
     { id: 'larisa', name: 'Larisa Resort', icon: Hotel },
-    { id: 'ewgroup', name: 'EW Group', icon: Briefcase },
+    { id: 'ewgroup', name: 'Collective', icon: Briefcase },
     { id: 'customers', name: 'Customers', icon: Users },
     { id: 'events', name: 'Events', icon: Calendar },
     { id: 'analytics', name: 'Analytics', icon: Activity, hideOnSmall: true },
@@ -23,7 +23,7 @@ const Sidebar = ({ collapsed, setCollapsed, currentPage, setCurrentPage }) => {
       {/* Sidebar Header */}
       <div className="flex items-center justify-between h-16 px-4 border-b border-indigo-800">
         {!collapsed && (
-          <div className="text-xl font-semibold truncate">EW Group</div>
+          <div className="text-xl font-semibold truncate">I'm a Powerhouse</div>
         )}
         <button 
           onClick={() => setCollapsed(!collapsed)}

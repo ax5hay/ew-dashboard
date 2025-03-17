@@ -9,7 +9,7 @@ const mockUserData = {
   role: 'System Administrator',
   department: 'IT & Data',
   phone: '+91 98765 43210',
-  location: 'Mumbai, India',
+  location: 'Chhatarpur, Delhi, India',
   timezone: 'Asia/Kolkata',
   language: 'English',
   joinDate: '2023-04-15',
