@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { formatCurrency, formatNumber, formatPercent } from '../../utils/formatters';
 import { PieChart as RechartsPieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -18,6 +18,39 @@ const PieChartComponent = ({
   innerRadius = 0, // 0 for pie, > 0 for donut
   outerRadius = 80,
 }) => {
+  const [chartHeight, setChartHeight] = useState(height);
+  const [isMobile, setIsMobile] = useState(false);
+  const [adjustedOuterRadius, setAdjustedOuterRadius] = useState(outerRadius);
+  const [adjustedInnerRadius, setAdjustedInnerRadius] = useState(innerRadius);
+  
+  // Adjust chart dimensions based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 640;
+      const small = window.innerWidth < 768;
+      setIsMobile(mobile);
+      
+      // Adjust height and radius for smaller screens
+      if (mobile) {
+        setChartHeight(Math.min(height, 200));
+        setAdjustedOuterRadius(Math.min(outerRadius, 60));
+        setAdjustedInnerRadius(innerRadius === 0 ? 0 : Math.min(innerRadius, 30));
+      } else if (small) {
+        setChartHeight(Math.min(height, 240));
+        setAdjustedOuterRadius(Math.min(outerRadius, 70));
+        setAdjustedInnerRadius(innerRadius === 0 ? 0 : Math.min(innerRadius, 35));
+      } else {
+        setChartHeight(height);
+        setAdjustedOuterRadius(outerRadius);
+        setAdjustedInnerRadius(innerRadius);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [height, outerRadius, innerRadius]);
+  
   // Apply default formatters if not provided
   const defaultTooltipFormatter = (value, name, entry) => {
     let formattedValue;
@@ -33,7 +66,7 @@ const PieChartComponent = ({
 
   // Custom label renderer
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }) => {
-    if (!showLabels) return null;
+    if (!showLabels || isMobile) return null;
     
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -50,7 +83,7 @@ const PieChartComponent = ({
         fill="white" 
         textAnchor={x > cx ? 'start' : 'end'} 
         dominantBaseline="central"
-        fontSize={12}
+        fontSize={10}
         fontWeight="bold"
       >
         {`${(percent * 100).toFixed(0)}%`}
@@ -60,8 +93,8 @@ const PieChartComponent = ({
 
   return (
     <div className="w-full">
-      {title && <h3 className="text-base font-medium text-gray-900 mb-3">{title}</h3>}
-      <div style={{ height: `${height}px` }}>
+      {title && <h3 className="text-sm sm:text-base font-medium text-gray-900 mb-2 sm:mb-3">{title}</h3>}
+      <div style={{ height: `${chartHeight}px` }}>
         <ResponsiveContainer width="100%" height="100%">
           <RechartsPieChart>
             <Pie
@@ -70,11 +103,12 @@ const PieChartComponent = ({
               cy="50%"
               labelLine={false}
               label={renderCustomizedLabel}
-              innerRadius={innerRadius}
-              outerRadius={outerRadius}
+              innerRadius={adjustedInnerRadius}
+              outerRadius={adjustedOuterRadius}
               fill="#8884d8"
               dataKey={dataKey}
               nameKey={nameKey}
+              paddingAngle={2}
             >
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
@@ -89,12 +123,18 @@ const PieChartComponent = ({
                 boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
                 fontSize: '12px'
               }}
+              wrapperStyle={{ zIndex: 1000 }}
             />
             <Legend
-              layout="horizontal"
-              verticalAlign="bottom"
-              align="center"
-              wrapperStyle={{ fontSize: '12px', paddingTop: '15px' }}
+              layout={isMobile ? "horizontal" : "vertical"}
+              verticalAlign={isMobile ? "bottom" : "middle"}
+              align={isMobile ? "center" : "right"}
+              iconSize={isMobile ? 8 : 10}
+              wrapperStyle={{ 
+                fontSize: isMobile ? '10px' : '12px',
+                paddingLeft: isMobile ? 0 : 20,
+                paddingTop: isMobile ? 10 : 0 
+              }}
             />
           </RechartsPieChart>
         </ResponsiveContainer>

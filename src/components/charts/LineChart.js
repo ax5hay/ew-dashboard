@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { formatCurrency, formatNumber } from '../../utils/formatters';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -12,6 +12,28 @@ const LineChartComponent = ({
   tooltipFormatter,
   yAxisTickFormatter
 }) => {
+  const [chartHeight, setChartHeight] = useState(height);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Adjust chart height and settings based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 640;
+      setIsMobile(mobile);
+      
+      // Adjust height for mobile
+      if (mobile) {
+        setChartHeight(Math.min(height, 220));
+      } else {
+        setChartHeight(height);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [height]);
+  
   // Generate colors for lines if not provided
   const defaultColors = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
   
@@ -34,23 +56,31 @@ const LineChartComponent = ({
 
   return (
     <div className="w-full">
-      {title && <h3 className="text-base font-medium text-gray-900 mb-3">{title}</h3>}
-      <div style={{ height: `${height}px` }}>
+      {title && <h3 className="text-sm sm:text-base font-medium text-gray-900 mb-2 sm:mb-3">{title}</h3>}
+      <div style={{ height: `${chartHeight}px` }}>
         <ResponsiveContainer width="100%" height="100%">
           <RechartsLineChart
             data={data}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            margin={{ 
+              top: 5, 
+              right: isMobile ? 5 : 30, 
+              left: isMobile ? 0 : 20, 
+              bottom: 5 
+            }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
             <XAxis 
               dataKey={xAxisDataKey} 
-              tick={{ fill: '#6B7280', fontSize: 12 }}
+              tick={{ fill: '#6B7280', fontSize: isMobile ? 10 : 12 }}
               axisLine={{ stroke: '#E5E7EB' }}
+              tickMargin={isMobile ? 5 : 10}
+              interval={isMobile ? 'preserveStartEnd' : 0}
             />
             <YAxis 
-              tick={{ fill: '#6B7280', fontSize: 12 }}
+              tick={{ fill: '#6B7280', fontSize: isMobile ? 10 : 12 }}
               axisLine={{ stroke: '#E5E7EB' }}
               tickFormatter={yAxisTickFormatter || defaultYAxisTickFormatter}
+              width={isMobile ? 35 : 50}
             />
             <Tooltip 
               formatter={tooltipFormatter || defaultTooltipFormatter}
@@ -66,7 +96,8 @@ const LineChartComponent = ({
               verticalAlign="bottom" 
               height={36} 
               iconType="circle"
-              wrapperStyle={{ fontSize: '12px' }}
+              iconSize={isMobile ? 8 : 10}
+              wrapperStyle={{ fontSize: isMobile ? '10px' : '12px' }}
             />
             {lines.map((line, index) => (
               <Line
@@ -75,9 +106,10 @@ const LineChartComponent = ({
                 dataKey={line.dataKey}
                 name={line.name || line.dataKey}
                 stroke={line.color || defaultColors[index % defaultColors.length]}
-                strokeWidth={2}
-                dot={{ r: 3, strokeWidth: 1 }}
-                activeDot={{ r: 5, strokeWidth: 1 }}
+                strokeWidth={line.strokeWidth || 2}
+                strokeDasharray={line.strokeDasharray}
+                dot={{ r: isMobile ? 2 : 3, strokeWidth: 1 }}
+                activeDot={{ r: isMobile ? 4 : 5, strokeWidth: 1 }}
               />
             ))}
           </RechartsLineChart>

@@ -80,3 +80,210 @@ code {
   outline: none;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
 }
+/* Add these responsive grid styles to your index.css file */
+
+/* Base grid styles */
+.grid-1 {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid-2 {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid-3 {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid-4 {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Extra small devices (phones) */
+@media (max-width: 639px) {
+  .grid-1, .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+/* Small devices (tablets) */
+@media (min-width: 640px) and (max-width: 767px) {
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .grid-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+/* Medium devices (laptops) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .grid-3, .grid-4 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .grid-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+/* Large devices (desktops) */
+@media (min-width: 1024px) {
+  .grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  
+  .grid-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+/* Spacing utilities */
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.gap-6 {
+  gap: 1.5rem;
+}
+
+.gap-8 {
+  gap: 2rem;
+}
+
+/* Responsive padding */
+.p-responsive {
+  padding: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .p-responsive {
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .p-responsive {
+    padding: 1.5rem;
+  }
+}
+
+/* Responsive font sizes */
+.text-responsive-title {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+}
+
+.text-responsive-subtitle {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+}
+
+.text-responsive-body {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .text-responsive-title {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .text-responsive-subtitle {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .text-responsive-body {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .text-responsive-title {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+}
+
+/* Responsive table */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile optimizations */
+@media (max-width: 639px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+  
+  .flex-col-on-mobile {
+    flex-direction: column !important;
+  }
+  
+  .text-center-on-mobile {
+    text-align: center !important;
+  }
+  
+  .w-full-on-mobile {
+    width: 100% !important;
+  }
+}
+
+/* Fix for long content on mobile */
+.truncate-mobile {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .truncate-mobile {
+    white-space: normal;
+    overflow: visible;
+  }
+}
+
+/* Fix for dashboard components scrolling */
+.overflow-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.5rem;
+  margin-bottom: -0.5rem;
+}

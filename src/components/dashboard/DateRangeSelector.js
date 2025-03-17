@@ -41,6 +41,12 @@ const DateRangeSelector = () => {
   };
 
   const getDisplayLabel = () => {
+    // For mobile, show only the value
+    if (window.innerWidth < 640) {
+      const selected = timeRanges.find(range => range.value === selectedRange);
+      return selected ? selected.value : '30d';
+    }
+    // For larger screens, show the full label
     const selected = timeRanges.find(range => range.value === selectedRange);
     return selected ? selected.label : 'Select Range';
   };
@@ -49,15 +55,15 @@ const DateRangeSelector = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center px-3 py-2 border border-gray-300 rounded-md bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-800 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
+        className="flex items-center px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-md bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-800 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
       >
-        <Calendar size={16} className="mr-2" />
-        <span>{getDisplayLabel()}</span>
-        <ChevronDown size={16} className="ml-2" />
+        <Calendar size={16} className="mr-1 sm:mr-2" />
+        <span className="truncate max-w-[60px] sm:max-w-none">{getDisplayLabel()}</span>
+        <ChevronDown size={16} className="ml-1 sm:ml-2" />
       </button>
 
       {isOpen && (
-        <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg z-20">
+        <div className="origin-top-right absolute right-0 mt-2 w-36 sm:w-48 rounded-md shadow-lg z-20">
           <div className="rounded-md bg-white shadow-xs">
             <div className="py-1">
               {timeRanges.map((range) => (

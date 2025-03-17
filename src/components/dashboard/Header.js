@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import DateRangeSelector from './DateRangeSelector';
-import { Menu, Search, Bell, HelpCircle, Calendar } from 'lucide-react';
+import { Menu, Search, Bell, HelpCircle, Calendar, Settings, User, LogOut } from 'lucide-react';
 
-const Header = ({ toggleSidebar, isSidebarCollapsed }) => {
+const Header = ({ toggleSidebar, isSidebarCollapsed, setCurrentPage, isMobile }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState([
     { id: 1, text: 'New booking at Larisa Resort', time: '10 minutes ago', read: false },
@@ -10,30 +10,45 @@ const Header = ({ toggleSidebar, isSidebarCollapsed }) => {
     { id: 3, text: 'Monthly revenue report available', time: 'Yesterday', read: true }
   ]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const markAllAsRead = () => {
     setNotifications(notifications.map(n => ({ ...n, read: true })));
   };
+  
+  // Navigate to profile page
+  const goToProfile = () => {
+    setCurrentPage('profile');
+    setShowUserMenu(false);
+  };
+  
+  // Navigate to settings page
+  const goToSettings = () => {
+    setCurrentPage('settings');
+    setShowUserMenu(false);
+  };
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-      <div className="px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+      <div className="px-2 sm:px-4 lg:px-8 flex items-center justify-between h-16">
         {/* Left side */}
         <div className="flex items-center">
           <button
             onClick={toggleSidebar}
-            className="text-gray-500 focus:outline-none lg:hidden"
+            className="text-gray-500 focus:outline-none p-1"
+            aria-label="Toggle menu"
           >
             <Menu size={20} />
           </button>
           
-          <div className="ml-4 flex items-center">
-            <div className="text-xl font-bold text-gray-800">
-              You Asked For a Presentation, Here's a Product Instead
+          <div className="ml-2 sm:ml-4 flex items-center">
+            <div className="text-base sm:text-xl font-bold text-gray-800 truncate max-w-[120px] sm:max-w-none">
+              {isMobile ? 'EW Dashboard' : 'Business Intelligence Dashboard'}
             </div>
-            <div className="ml-4 text-sm text-gray-500 flex items-center">
+            <div className="hidden sm:flex ml-4 text-sm text-gray-500 items-center">
               <Calendar size={16} className="mr-1" />
               <span>Today, {new Date().toLocaleDateString()}</span>
             </div>
@@ -41,10 +56,10 @@ const Header = ({ toggleSidebar, isSidebarCollapsed }) => {
         </div>
 
         {/* Right side */}
-        <div className="flex items-center space-x-4">
-          {/* Search */}
-          <div className="relative hidden md:block">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <div className="flex items-center space-x-1 sm:space-x-4">
+          {/* Search (Desktop) */}
+          <div className="hidden md:block relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search size={16} className="text-gray-400" />
             </div>
             <input
@@ -56,13 +71,48 @@ const Header = ({ toggleSidebar, isSidebarCollapsed }) => {
             />
           </div>
 
-          {/* Date Range Selector */}
-          <DateRangeSelector />
+          {/* Search Icon (Mobile) */}
+          <button 
+            className="md:hidden p-1 rounded-full text-gray-500 hover:text-gray-700 focus:outline-none"
+            onClick={() => setShowMobileSearch(!showMobileSearch)}
+          >
+            <Search size={20} />
+          </button>
+
+          {/* Mobile Search Input (conditional) */}
+          {showMobileSearch && (
+            <div className="absolute top-16 left-0 right-0 bg-white p-2 border-b border-gray-200 z-20">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search..."
+                  className="block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md text-sm"
+                  autoFocus
+                />
+                <button 
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                  onClick={() => setShowMobileSearch(false)}
+                >
+                  <span className="text-sm text-gray-500">Done</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Date Range Selector (hidden on small mobile) */}
+          <div className="hidden sm:block">
+            <DateRangeSelector />
+          </div>
 
           {/* Notifications */}
           <div className="relative">
             <button 
-              onClick={() => setShowNotifications(!showNotifications)}
+              onClick={() => {
+                setShowNotifications(!showNotifications);
+                setShowUserMenu(false);
+              }}
               className="p-1 rounded-full text-gray-500 hover:text-gray-700 focus:outline-none"
             >
               <Bell size={20} />
@@ -74,8 +124,8 @@ const Header = ({ toggleSidebar, isSidebarCollapsed }) => {
             </button>
 
             {showNotifications && (
-              <div className="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg">
-                <div className="rounded-md bg-white shadow-xs">
+              <div className="origin-top-right absolute right-0 mt-2 w-80 sm:w-96 rounded-md shadow-lg">
+                <div className="rounded-md bg-white shadow-xs max-h-[80vh] overflow-hidden flex flex-col">
                   <div className="p-3 border-b border-gray-200 flex justify-between items-center">
                     <h3 className="text-sm font-medium">Notifications</h3>
                     <button 
@@ -85,7 +135,7 @@ const Header = ({ toggleSidebar, isSidebarCollapsed }) => {
                       Mark all as read
                     </button>
                   </div>
-                  <div className="max-h-72 overflow-y-auto">
+                  <div className="max-h-72 overflow-y-auto flex-1">
                     {notifications.length > 0 ? (
                       notifications.map(notification => (
                         <div 
@@ -112,16 +162,52 @@ const Header = ({ toggleSidebar, isSidebarCollapsed }) => {
             )}
           </div>
 
-          {/* Help */}
-          <button className="p-1 rounded-full text-gray-500 hover:text-gray-700 focus:outline-none">
+          {/* Help (hidden on mobile) */}
+          <button className="hidden sm:block p-1 rounded-full text-gray-500 hover:text-gray-700 focus:outline-none">
             <HelpCircle size={20} />
           </button>
 
-          {/* Profile - Hidden when sidebar is expanded on mobile */}
-          <div className="hidden md:flex items-center">
-            <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white">
-              A
+          {/* Profile dropdown */}
+          <div className="relative">
+            <div>
+              <button 
+                onClick={() => {
+                  setShowUserMenu(!showUserMenu);
+                  setShowNotifications(false);
+                }}
+                className="flex text-sm bg-indigo-100 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <span className="sr-only">Open user menu</span>
+                <div className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-medium">
+                  A
+                </div>
+              </button>
             </div>
+            
+            {showUserMenu && (
+              <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-20">
+                <button
+                  onClick={goToProfile}
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <User className="h-4 w-4 mr-2 text-gray-500" />
+                  Your Profile
+                </button>
+                <button
+                  onClick={goToSettings}
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <Settings className="h-4 w-4 mr-2 text-gray-500" />
+                  Settings
+                </button>
+                <button
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <LogOut className="h-4 w-4 mr-2 text-gray-500" />
+                  Sign out
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
